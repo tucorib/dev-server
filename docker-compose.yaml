@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  reverse:
+    image: 'nginx'
+    restart: 'always'
+    hostname: 'reverse'
+    container_name: 'reverse'
+    depends_on:
+      - 'gitlab'
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - './nginx:/etc/nginx'
+    links:
+      - 'gitlab'
+
+  gitlab:
+    image: 'ulm0/gitlab'
+    restart: 'always'
+    hostname: 'gitlab'
+    container_name: 'gitlab'
+    ports:
+     - '2224:22'
+    volumes:
+      - './gitlab/config/gitlab.rb:/etc/gitlab/gitlab.rb'
+      - './gitlab/config/gitlab-secrets.json:/etc/gitlab/gitlab-secrets.json'
+      - '/srv/gitlab/logs:/var/log/gitlab'
+      - '/srv/gitlab/data:/var/opt/gitlab'
+      - '/mnt/backups/gitlab:/mnt/backups'
+
